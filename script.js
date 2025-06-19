@@ -1,4 +1,4 @@
-// Array de estudiantes
+// Array inicial con estudiantes
 const estudiantes = [
   {
     nombre: "Laura Gómez",
@@ -14,90 +14,93 @@ const estudiantes = [
   }
 ];
 
-// Funciones anteriores (1 a 9)
+// Muestra todos los estudiantes y su info
 function mostrarEstudiantes() {
-  estudiantes.forEach(estudiante => {
-    console.log(`Nombre: ${estudiante.nombre}`);
-    console.log(`Calificaciones: ${estudiante.calificaciones.join(', ')}`);
-    console.log(`Promedio: ${calcularPromedio(estudiante.calificaciones)}`);
-    console.log(`Mejor calificación: ${obtenerMejorCalificacion(estudiante.calificaciones)}`);
-    console.log(`Peor calificación: ${obtenerPeorCalificacion(estudiante.calificaciones)}\n`);
+  estudiantes.forEach(est => {
+    console.log("Nombre:", est.nombre);
+    console.log("Calificaciones:", est.calificaciones.join(", "));
+    console.log("Promedio:", calcularPromedio(est.calificaciones));
+    console.log("Mejor calificación:", obtenerMejorCalificacion(est.calificaciones));
+    console.log("Peor calificación:", obtenerPeorCalificacion(est.calificaciones));
+    console.log("");
   });
 }
 
+// Calcula promedio
 function calcularPromedio(calificaciones) {
-  const suma = calificaciones.reduce((total, nota) => total + nota, 0);
-  const promedio = suma / calificaciones.length;
-  return promedio.toFixed(2);
+  let suma = calificaciones.reduce((a, b) => a + b, 0);
+  return (suma / calificaciones.length).toFixed(2);
 }
 
+// Devuelve la mayor calificacion
 function obtenerMejorCalificacion(calificaciones) {
   return Math.max(...calificaciones);
 }
 
+// Devuelve la menor calificacion
 function obtenerPeorCalificacion(calificaciones) {
   return Math.min(...calificaciones);
 }
 
-function agregarCalificacion(nombreEstudiante, nuevaCalificacion) {
-  const estudiante = estudiantes.find(est => est.nombre === nombreEstudiante);
-  if (estudiante) {
-    estudiante.calificaciones.push(nuevaCalificacion);
-    console.log(`Calificación agregada a ${nombreEstudiante}.`);
+// Agrega una calificacion a un estudiante
+function agregarCalificacion(nombreEstudiante, nuevaNota) {
+  const est = estudiantes.find(e => e.nombre === nombreEstudiante);
+  if (est) {
+    est.calificaciones.push(nuevaNota);
+    console.log("Calificación agregada.");
   } else {
-    console.log(`Estudiante "${nombreEstudiante}" no encontrado.`);
+    console.log("Estudiante no encontrado.");
   }
 }
 
+// Elimina la última calificacion del estudiante
 function eliminarUltimaCalificacion(nombreEstudiante) {
-  const estudiante = estudiantes.find(est => est.nombre === nombreEstudiante);
-  if (estudiante) {
-    if (estudiante.calificaciones.length > 0) {
-      const eliminada = estudiante.calificaciones.pop();
-      console.log(`Se eliminó la calificación ${eliminada} de ${nombreEstudiante}.`);
+  const est = estudiantes.find(e => e.nombre === nombreEstudiante);
+  if (est) {
+    if (est.calificaciones.length > 0) {
+      est.calificaciones.pop();
+      console.log("Calificación eliminada.");
     } else {
-      console.log(`${nombreEstudiante} no tiene calificaciones para eliminar.`);
+      console.log("No hay calificaciones para eliminar.");
     }
   } else {
-    console.log(`Estudiante "${nombreEstudiante}" no encontrado.`);
+    console.log("Estudiante no encontrado.");
   }
 }
 
-function filtrarEstudiantesAprobados(promedioMinimo) {
-  return estudiantes.filter(est =>
-    parseFloat(calcularPromedio(est.calificaciones)) >= promedioMinimo
-  );
+// Filtra estudiantes cuyo promedio sea >= minimo
+function filtrarEstudiantesAprobados(minimo) {
+  const aprobados = estudiantes.filter(e => parseFloat(calcularPromedio(e.calificaciones)) >= minimo);
+  console.log("Estudiantes aprobados:");
+  aprobados.forEach(e => console.log(e.nombre));
 }
 
+// Ordena los estudiantes alfabeticamente por nombre
 function ordenarEstudiantesPorNombre() {
   estudiantes.sort((a, b) => a.nombre.localeCompare(b.nombre));
-  console.log("Estudiantes ordenados alfabéticamente por nombre.");
+  console.log("Estudiantes ordenados por nombre.");
 }
 
+// Genera un reporte individual
 function generarReporteOriginal(nombreEstudiante) {
-  const estudiante = estudiantes.find(est => est.nombre === nombreEstudiante);
-  if (estudiante) {
-    const promedio = calcularPromedio(estudiante.calificaciones);
-    const mejor = obtenerMejorCalificacion(estudiante.calificaciones);
-    const peor = obtenerPeorCalificacion(estudiante.calificaciones);
-
-    console.log(`\n📋 Reporte de ${estudiante.nombre}`);
-    console.log(`Calificaciones: ${estudiante.calificaciones.join(', ')}`);
-    console.log(`Promedio: ${promedio}`);
-    console.log(`Mejor calificación: ${mejor}`);
-    console.log(`Peor calificación: ${peor}\n`);
+  const est = estudiantes.find(e => e.nombre === nombreEstudiante);
+  if (est) {
+    console.log("Reporte de:", est.nombre);
+    console.log("Calificaciones:", est.calificaciones.join(", "));
+    console.log("Promedio:", calcularPromedio(est.calificaciones));
+    console.log("Mejor calificacion:", obtenerMejorCalificacion(est.calificaciones));
+    console.log("Peor calificacion:", obtenerPeorCalificacion(est.calificaciones));
   } else {
-    console.log(`Estudiante "${nombreEstudiante}" no encontrado.`);
+    console.log("Estudiante no encontrado.");
   }
 }
 
-// 10. Función principal: menú interactivo
+// Menu principal interactivo por consola
 function iniciarGestionCalificaciones() {
   let opcion;
-
   do {
     opcion = prompt(
-      "📚 Gestión de Calificaciones\n" +
+      "\nMenú de Calificaciones:\n" +
       "1. Mostrar estudiantes\n" +
       "2. Agregar calificación\n" +
       "3. Eliminar última calificación\n" +
@@ -113,43 +116,38 @@ function iniciarGestionCalificaciones() {
         mostrarEstudiantes();
         break;
       case "2":
-        const nombreAgregar = prompt("Ingrese el nombre del estudiante:");
-        const nuevaNota = parseFloat(prompt("Ingrese la nueva calificación:"));
+        const nombreAgregar = prompt("Nombre del estudiante:");
+        const nuevaNota = parseFloat(prompt("Nueva calificación:"));
         if (!isNaN(nuevaNota)) {
           agregarCalificacion(nombreAgregar, nuevaNota);
         } else {
-          console.log("⚠️ Calificación inválida.");
+          console.log("Nota inválida.");
         }
         break;
       case "3":
-        const nombreEliminar = prompt("Ingrese el nombre del estudiante:");
+        const nombreEliminar = prompt("Nombre del estudiante:");
         eliminarUltimaCalificacion(nombreEliminar);
         break;
       case "4":
-        const minimo = parseFloat(prompt("Ingrese el promedio mínimo para aprobar:"));
-        const aprobados = filtrarEstudiantesAprobados(minimo);
-        console.log(`Estudiantes con promedio >= ${minimo}:`);
-        aprobados.forEach(est => console.log(`- ${est.nombre}`));
+        const minimo = parseFloat(prompt("Promedio mínimo para aprobar:"));
+        filtrarEstudiantesAprobados(minimo);
         break;
       case "5":
         ordenarEstudiantesPorNombre();
         break;
       case "6":
-        const nombreReporte = prompt("Ingrese el nombre del estudiante:");
+        const nombreReporte = prompt("Nombre del estudiante:");
         generarReporteOriginal(nombreReporte);
         break;
       case "7":
-        console.log("👋 Saliendo del sistema...");
+        console.log("Saliendo...");
         break;
       default:
-        console.log("⚠️ Opción inválida.");
+        console.log("Opción inválida.");
     }
+
   } while (opcion !== "7");
 }
 
-// Ejecutar el menú
-iniciarGestionCalificaciones();
-
-
-// Iniciamos el sistema
+// Inicia el sistema interactivo
 iniciarGestionCalificaciones();
